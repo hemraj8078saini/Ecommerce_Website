@@ -12,6 +12,14 @@ import Dashboard from './pages/admin/dashboard/Dashboard';
 import NoPage from './pages/nopage/NoPage';
 import HeroSection from './components/heroSection/HeroSection';
 import MyState from './context/data/myState';
+import Login from './pages/registration/Login';
+import Signup from './pages/registration/Signup';
+import ProductInfo from './pages/productInfo/ProductInfo';
+import AddProduct from './pages/admin/dashboard/pages/AddProduct';
+import UpdateProduct from './pages/admin/dashboard/pages/UpdateProduct';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
+
 
 function App() {
   return (
@@ -22,8 +30,14 @@ function App() {
     <Route path="/order" element={<Order/>} />
     <Route path="/cart" element={<Cart/>} />
     <Route path="/dashboard" element={<Dashboard/>} />
+    <Route path="/login" element={<Login />} />
+    <Route path="/signup" element={<Signup />} />
+    <Route path="/addproduct" element={<AddProduct/>}/>
+    <Route path='/updateproduct' element={<UpdateProduct/>}/>
+    <Route path="/productinfo/:id" element={<ProductInfo />} />
     <Route path="/*" element={<NoPage/>} />
     </Routes>
+    <ToastContainer/>
     </Router>
     </MyState>
   )
