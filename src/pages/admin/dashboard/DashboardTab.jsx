@@ -4,8 +4,11 @@ import myContext from '../../../context/data/mycontext';
 import { MdOutlineProductionQuantityLimits } from 'react-icons/md';
 import { FaUser, FaCartPlus } from 'react-icons/fa';
 import { AiFillShopping, AiFillPlusCircle, AiFillDelete } from 'react-icons/ai';
+import { useNavigate } from 'react-router-dom';
+// import AddProduct from './pages/admin/dashboard/pages/AddProduct';
 
 function DashboardTab() {
+    const navigate = useNavigate();
     const context = useContext(myContext)
     const { mode } = context
     let [isOpen, setIsOpen] = useState(false)
@@ -16,6 +19,9 @@ function DashboardTab() {
 
     function openModal() {
         setIsOpen(true)
+    }
+    function navigation(){
+        navigate('/addproduct')
     }
     return (
         <>
@@ -49,6 +55,7 @@ function DashboardTab() {
                                 <h1 className=' text-center mb-5 text-3xl font-semibold underline' style={{ color: mode === 'dark' ? 'white' : '' }}>Product Details</h1>
                                 <div className=" flex justify-end">
                                     <button
+                                    onClick={navigation}
                                         type="button"
                                         className="focus:outline-none text-white bg-pink-600 shadow-[inset_0_0_10px_rgba(0,0,0,0.6)] border hover:bg-pink-700 outline-0 font-medium rounded-lg text-sm px-5 py-2.5 mb-2" style={{ backgroundColor: mode === 'dark' ? 'rgb(46 49 55)' : '', color: mode === 'dark' ? 'white' : '', }} > <div className="flex gap-2 items-center">
                                             Add Product <FaCartPlus size={20} />
