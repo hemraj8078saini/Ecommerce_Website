@@ -141,7 +141,7 @@ function myState(props) {
     const getOrderData = async () => {
         setLoading(true)
         try {
-            const result = await getDocs(collection(fireDB, "order"))
+            const result = await getDocs(collection(fireDB, "orders"))
             const ordersArray = [];
             result.forEach((doc) => {
                 ordersArray.push(doc.data());
