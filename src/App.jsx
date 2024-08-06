@@ -69,7 +69,7 @@ export const ProtectedRoutes = ({ children }) => {
 export const ProtectedRoutesForAdmin = ({children}) => {
   const admin = JSON.parse(localStorage.getItem('user'))
   console.log(admin.user.email)
-  if (admin.user.email === 'hemraj@gmail.com') {
+  if (admin.user.email === 'knupadhyay784@gmail.com') {
     return children
   }
   else {
