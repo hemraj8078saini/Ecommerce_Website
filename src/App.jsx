@@ -3,6 +3,7 @@ import {
   BrowserRouter as Router,
   Route,
   Routes,
+  useNavigate,
 } from "react-router-dom";
 
 import Home from './pages/home/Home';
@@ -23,6 +24,7 @@ import Allproducts from './pages/allproducts/AllProducts';
 
 
 function App() {
+  // const Navigate=useNavigate()
   return (
     <MyState>
       <Router>
@@ -69,7 +71,7 @@ export const ProtectedRoutes = ({ children }) => {
 export const ProtectedRoutesForAdmin = ({children}) => {
   const admin = JSON.parse(localStorage.getItem('user'))
   console.log(admin.user.email)
-  if (admin.user.email === 'knupadhyay784@gmail.com') {
+  if (admin.user.email === 'hemraj@gmail.com') {
     return children
   }
   else {

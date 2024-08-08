@@ -1,0 +1,16 @@
+/* Default styles */
+.slide img {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+  }
+  
+  /* Media query for mobile and tablet view */
+  @media screen and (min-width: 300px) and (max-width: 768px) {
+    .slide img {
+      height: 200px;
+      width: 100%;
+      padding: 10px;
+    }
+  }
+  
