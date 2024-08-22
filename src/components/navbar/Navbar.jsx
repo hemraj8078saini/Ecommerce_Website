@@ -1,34 +1,31 @@
-import { Fragment, useContext, useState } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { Fragment, useContext, useState } from 'react'
+import myContext from '../../context/data/mycontext';
 import { BsFillCloudSunFill } from 'react-icons/bs'
 import { FiSun } from 'react-icons/fi'
-import myContext from '../../context/data/mycontext'
+import { Link } from 'react-router-dom';
+import { Dialog, Transition } from '@headlessui/react'
 import { RxCross2 } from 'react-icons/rx'
-import { useSelector } from 'react-redux'
+import { useSelector } from 'react-redux';
 
-export default function Navbar() {
+function Navbar() {
+  const context = useContext(myContext);
+  const {mode, toggleMode} = context;
+
   const [open, setOpen] = useState(false)
-  const navigate=useNavigate();
 
-  const context = useContext(myContext)
-  const { toggleMode, mode } = context
+  const user = JSON.parse(localStorage.getItem('user'));
 
-  const user = JSON.parse(localStorage.getItem('currentUser'))
-  const admin = JSON.parse(localStorage.getItem('currentAdmin'))
+  // console.log(user.user.email)
 
   const logout = () => {
-    localStorage.clear('currentUser')
-    localStorage.clear('currentAdmin');
-    navigate("/")
+    localStorage.clear('user');
+    window.location.href = '/login'
   }
 
   const cartItems = useSelector((state) => state.cart)
 
-
   return (
-    <div className="bg-white sticky top-0 z-50  "  >
-      {/* Mobile menu */}
+    <div className='bg-white sticky top-0 z-50'>
       <Transition.Root show={open} as={Fragment}>
         <Dialog as="div" className="relative z-40 lg:hidden" onClose={setOpen}>
           <Transition.Child
@@ -65,27 +62,32 @@ export default function Navbar() {
                   </button>
                 </div>
                 <div className="space-y-6 border-t border-gray-200 px-4 py-6">
-
+                  
                   <Link to={'/allproducts'} className="text-sm font-medium text-gray-900 " style={{ color: mode === 'dark' ? 'white' : '', }}>
                     All Products
                   </Link>
-                  <div className="flow-root">
+
+                  {user ? <div className="flow-root">
                     <Link to={'/order'} style={{ color: mode === 'dark' ? 'white' : '', }} className="-m-2 block p-2 font-medium text-gray-900">
                       Order
                     </Link>
-                  </div>
+                  </div> : ""}
 
-                  {admin?.user?.email === 'hemraj@gmail.com' ? <div className="flow-root">
+                  {user?.user?.email === "hemraj@gmail.com" ? <div className="flow-root">
                     <Link to={'/dashboard'} className="-m-2 block p-2 font-medium text-gray-900" style={{ color: mode === 'dark' ? 'white' : '', }}>
                       admin
                     </Link>
                   </div> : ""}
 
-                  {user ? <div className="flow-root">
+                {user ? <div className="flow-root">
                     <a onClick={logout} className="-m-2 block p-2 font-medium text-gray-900 cursor-pointer" style={{ color: mode === 'dark' ? 'white' : '', }}>
                       Logout
                     </a>
-                  </div> : ""}
+                  </div> : <div className="flow-root">
+                    <Link to={'/signup'}  className="-m-2 block p-2 font-medium text-gray-900 cursor-pointer" style={{ color: mode === 'dark' ? 'white' : '', }}>
+                      Signup
+                    </Link>
+                  </div>}
                   <div className="flow-root">
                     <Link to={'/'} className="-m-2 block p-2 font-medium text-gray-900 cursor-pointer">
                       <img
@@ -95,15 +97,14 @@ export default function Navbar() {
                   </div>
                 </div>
 
-                <div className="border-t border-gray-200 px-4 py-6">
-                  <a href="#" className="-m-2 flex items-center p-2">
+                 <div className="hidden lg:ml-6  lg:flex">
+                  <a href="#" className="flex items-center text-gray-700 ">
                     <img
-                      src="img/indiaflag.png"
+                      src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN0AAACUCAMAAAAgTdyMAAAAolBMVEX/Zx8Eajj/////VAAAWA//1MrK1cwAAIkAAIwGA40AAIbZ2enc3OsAAH/8/P7v7/b29vrn5/G6utiOjsDNzeK/v9rU1Obh4e1lZaufn8JycrGurtHHx99SUqF+frCGhrx5ea+ZmceMjLg2NpSyssxCQpygoMlISJ1dXaiSkrogIIpqaqZQT6MyMpQTEo0uLpUwMIYgH5IqKoY4OIohIYRUVJphGrhOAAADzklEQVR4nO2ai47bKBRAs7S7EPwAg1+xndiOEzuxJ5lJs/P/v7aQkapK3arVam8q0D2SHdmKBEcXuBhYrRAEQRAEQRAEQRAEQRAEQRAEQRAEQRAEQRAEQRAEQZD/lU8+s/rTZ1bEZ55nF4ukKMKiSET8tDKfZRdmY3Vc84ivh3LMgieV+hy7ZjdRTikzN0bN7bjLnlLuM+yKcuaUm7ix7elk48cZv73nTygZ3k52ETWUo9yfSUg2XVxXJoA0qiR42eB2wWQidVpKEdjBpLavUlmVpWmgA3j4oO3SgbOLDmVIRGMee3OFASlE0g+MDgq4dGC7fDZNcIkfY0hrrspc2j4o0kWc3oD1YO2KiPGyV0SO5qEzTfPF/JbmUgVpdMVZlIKWD2qXXIzcI7eN5q5Mp7uY7GBMk0f8wurKXgvICkDayY6y1zyxzVJ0kiQLIW+E7AISd4l5lxXhkdFKANYA0q6hLJpTktuBsj4QuRXkLZYvgijbUOuUBINpuZBdD9BOHGmkbBrI+thk9CIuFXmTzSlObGsdrZVsInYDDB6gnYroJG0TJPVZmixONmf5Jdm0xGT1eLThI0KeaNTDVQHQbmZRIxtlQ7PZSXFp0m34li9Z/lrE570JqswakXNG4aoAZ2eyQVSRONQ2SvtFbKb8lt7VLXjfy53NDnVrpi/a/KsBqwOcXWvmljYbxPXQmFFyK+Z219ybpZ/FUkqSTqPtk0nJaAlWBzi7iQ7pxzw5WY5B0h3zRatjdl6ysizC7ftHopPBi+mdUHUAswsHuoR5mjV2XKmHJdvvRq1OjR7Pnerm2gROpFkaFB1/BZtNg9llMy0FKVLVdrqRyfm+P7R6ezm1+tBPuojTvmtVGhJZ0WsNVQkwu5Gx6EAeyyn98Pekg3E7Xs2X+bUv+6Cfvgy6eCywqIhRDVUJMDtN1+3X/iT0dG/N4L9er1mU6/ukk69/HK98D1UJODt+q0WQZupwqDebTX0YK7628GqsP94clOl3STaj3X/jt7fMuHexZY5rn0cVvzPCr2dz6mA2/24mNvk0E/N8Fu33F9CvfL2m9uuVw1UBeOVBPBZNfrzyEDu78iCOlPu7akQa7vGKn+ertd+utIferbR7vkvy0x2u2ekdrp/sTl6gzwaA7yyHPu8se34qgPz7iY755MeJDovPp3EsPp+ksvh8Cu73sPrLZ1affWb1h8+gnbugnbugnbugnbugnbugnbugnbugnbugnbugnbugnbugnbugnbugnbugnbugnbugnbugnbugnbugnbugnbugnbugnbv4bfcPRSX2cqtZEHIAAAAASUVORK5CYII="
                       alt=""
                       className="block h-auto w-5 flex-shrink-0"
                     />
-                    <span className="ml-3 block text-base font-medium text-gray-900" style={{ color: mode === 'dark' ? 'white' : '', }}>INDIA</span>
-                    <span className="sr-only">, change currency</span>
+                    <span className="ml-3 block text-sm font-medium" style={{ color: mode === 'dark' ? 'white' : '', }}>INDIA</span>
                   </a>
                 </div>
               </Dialog.Panel>
@@ -112,9 +113,9 @@ export default function Navbar() {
         </Dialog>
       </Transition.Root>
 
-      {/* desktop  */}
       <header className="relative bg-white">
-        <p className="flex h-10 items-center justify-center bg-pink-600 px-4 text-sm font-medium text-white sm:px-6 lg:px-8" style={{ backgroundColor: mode === 'dark' ? 'rgb(62 64 66)' : '', color: mode === 'dark' ? 'white' : '', }}>
+        <p className="flex h-10 items-center justify-center bg-pink-600 px-4 text-sm font-medium text-white sm:px-6 lg:px-8" 
+        style={{ backgroundColor: mode === 'dark' ? 'rgb(62 64 66)' : '', color: mode === 'dark' ? 'white' : '', }}>
           Get free delivery on orders over ₹300
         </p>
 
@@ -148,23 +149,21 @@ export default function Navbar() {
                   <Link to={'/allproducts'} className="text-sm font-medium text-gray-700 " style={{ color: mode === 'dark' ? 'white' : '', }}>
                     All Products
                   </Link>
-                  <Link to={'/order'} className="text-sm font-medium text-gray-700 " style={{ color: mode === 'dark' ? 'white' : '', }}>
+                 {user ?  <Link to={'/order'} className="text-sm font-medium text-gray-700 " style={{ color: mode === 'dark' ? 'white' : '', }}>
                     Order
-                  </Link>
+                  </Link> :   <Link to={'/signup'}  className="text-sm font-medium text-gray-700 " style={{ color: mode === 'dark' ? 'white' : '', }}>
+                      Signup
+                    </Link>}
 
-                  {admin?.user?.email === 'hemraj@gmail.com'?
+                  {user?.user?.email === 'hemraj@gmail.com' ? 
                    <Link to={'/dashboard'} className="text-sm font-medium text-gray-700 " style={{ color: mode === 'dark' ? 'white' : '', }}>
                     Admin
-                  </Link> : ""
-                }
-                 
-
-                  {user ? <a onClick={logout} className="text-sm font-medium text-gray-700 cursor-pointer  " style={{ color: mode === 'dark' ? 'white' : '', }}>
+                  </Link> : ""}
+                  
+                
+                 {user ?  <a onClick={logout} className="text-sm font-medium text-gray-700 cursor-pointer  " style={{ color: mode === 'dark' ? 'white' : '', }}>
                     Logout
-                  </a> : <Link to={'/signup'} className="text-sm font-medium text-gray-700 cursor-pointer  " style={{ color: mode === 'dark' ? 'white' : '', }}>
-                    Signup
-                  </Link>}
-
+                  </a> : ""}
                 </div>
 
                 <div className="hidden lg:ml-8 lg:flex">
@@ -186,10 +185,8 @@ export default function Navbar() {
                   </a>
                 </div>
 
-                {/* Search */}
                 <div className="flex lg:ml-6">
                   <button className='' onClick={toggleMode}>
-                    {/* <MdDarkMode size={35} style={{ color: mode === 'dark' ? 'white' : '' }} /> */}
                     {mode === 'light' ?
                       (<FiSun className='' size={30} />
                       ) : 'dark' ?
@@ -217,3 +214,5 @@ export default function Navbar() {
     </div>
   )
 }
+
+export default Navbar
